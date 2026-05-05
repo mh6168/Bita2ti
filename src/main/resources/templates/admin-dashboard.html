@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+</head>
+<body>
+
+<h1>🛡 Admin Dashboard</h1>
+
+<hr>
+
+<h2>👥 All Users</h2>
+
+<div th:each="user : ${users}">
+
+    <h3>
+        <span th:text="${user.fullName}"></span>
+        (
+        <span th:text="${user.email}"></span>
+        )
+    </h3>
+
+    <p>
+        Digital ID:
+        <b th:text="${user.digitalId}"></b>
+    </p>
+
+    <h4>📄 Subscriptions:</h4>
+
+    <ul>
+        <li th:each="sub : ${subscriptions[user.id]}">
+
+            <!-- show organization name -->
+            <span th:text="${orgRepo.findById(sub.organizationId).get().name}"></span>
+
+            -
+            <span style="color:green;">ACTIVE</span>
+
+        </li>
+    </ul>
+
+    <hr>
+
+</div>
+
+</body>
+</html>

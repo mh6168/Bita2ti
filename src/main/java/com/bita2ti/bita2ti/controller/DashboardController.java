@@ -17,18 +17,23 @@ public class DashboardController {
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
 
+        // Get logged-in user from session
         User user = (User) session.getAttribute("user");
 
+        // If not logged in → redirect
         if (user == null) {
             return "redirect:/login";
         }
 
+        // User info
         model.addAttribute("name", user.getFullName());
         model.addAttribute("digitalId", user.getDigitalId());
 
+        // Available organizations
         model.addAttribute("orgs",
                 subscriptionService.getAllOrganizations());
 
+        // User subscriptions
         model.addAttribute("subscriptions",
                 subscriptionService.getUserSubscriptions(user.getId()));
 

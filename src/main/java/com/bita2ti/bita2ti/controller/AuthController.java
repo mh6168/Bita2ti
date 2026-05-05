@@ -16,28 +16,52 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    // ================= REGISTER =================
+    // =========================
+    // SHOW SIGNUP PAGE
+    // =========================
     @GetMapping("/signup")
-    public String signupPage() {
+    public String signupPage(HttpSession session) {
+
+        // If already logged in → redirect to dashboard
+        if (session.getAttribute("user") != null) {
+            return "redirect:/dashboard";
+        }
+
         return "signup";
     }
 
+    // =========================
+    // REGISTER USER
+    // =========================
     @PostMapping("/signup")
-    public String signup(@ModelAttribute User user, HttpSession session) {
+    public String signup(@ModelAttribute User user,
+                         HttpSession session) {
 
         User savedUser = userService.register(user);
 
+        // store user in session
         session.setAttribute("user", savedUser);
 
         return "redirect:/dashboard";
     }
 
-    // ================= LOGIN =================
+    // =========================
+    // SHOW LOGIN PAGE
+    // =========================
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginPage(HttpSession session) {
+
+        // If already logged in → redirect to dashboard
+        if (session.getAttribute("user") != null) {
+            return "redirect:/dashboard";
+        }
+
         return "login";
     }
 
+    // =========================
+    // LOGIN USER
+    // =========================
     @PostMapping("/login")
     public String login(@RequestParam String email,
                         @RequestParam String password,
@@ -47,20 +71,25 @@ public class AuthController {
         Optional<User> user = userService.login(email, password);
 
         if (user.isPresent()) {
+
             session.setAttribute("user", user.get());
+
             return "redirect:/dashboard";
         }
 
         model.addAttribute("error", "Invalid email or password");
+
         return "login";
     }
 
-    // ================= DASHBOARD =================
-
-    // ================= LOGOUT =================
+    // =========================
+    // LOGOUT
+    // =========================
     @GetMapping("/logout")
     public String logout(HttpSession session) {
+
         session.invalidate();
+
         return "redirect:/login";
     }
 }
