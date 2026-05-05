@@ -68,6 +68,16 @@ public class AuthController {
                         HttpSession session,
                         Model model) {
 
+        // Special admin login - email: admin@admin.com, password: admin
+        if ("admin@admin.com".equals(email) && "admin".equals(password)) {
+            User adminUser = new User();
+            adminUser.setEmail("admin@admin.com");
+            adminUser.setFullName("Administrator");
+            adminUser.setDigitalId("ADMIN-0000");
+            session.setAttribute("user", adminUser);
+            return "redirect:/admin/dashboard";
+        }
+
         Optional<User> user = userService.login(email, password);
 
         if (user.isPresent()) {
