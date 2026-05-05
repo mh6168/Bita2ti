@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Organization - Admin</title>
+    <style>
+        body { font-family: Arial; max-width: 600px; margin: 50px auto; }
+        input, select, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+        button { background: #27ae60; color: white; border: none; cursor: pointer; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>➕ Add New Organization</h1>
+
+    <form th:action="@{/admin/add-organization}" th:object="${organization}" method="post">
+        <label for="name">Organization Name:</label>
+        <input type="text" th:field="*{name}" id="name" required />
+
+        <label for="type">Type:</label>
+        <select th:field="*{type}" id="type" required>
+            <option value="">Select Type</option>
+            <option value="Government">Government</option>
+            <option value="Private">Private Company</option>
+            <option value="University">University</option>
+            <option value="NGO">NGO</option>
+        </select>
+
+        <label>
+            <input type="checkbox" th:field="*{approved}" /> Approved (Users can subscribe)
+        </label>
+
+        <button type="submit">Create Organization</button>
+    </form>
+
+    <br>
+    <a href="/admin/dashboard">← Back to Dashboard</a>
+</body>
+</html>

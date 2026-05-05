@@ -1,9 +1,14 @@
-# Admin Login Feature TODO
+# Admin Features TODO
 
-## Steps:
+## Admin Login (Complete)
 1. [x] Plan approved
 2. [x] Edit AuthController.java with admin special case
-3. [ ] Test the login functionality
-4. [ ] Mark complete and remove TODO.md
+3. [x] Test the login functionality
 
-Current status: Implementing step 2.
+## Organization Creation
+1. [ ] Update TODO
+2. [x] Edit AdminController.java to add GET/POST /admin/add-organization
+3. [x] Create admin-add-organization.html form
+4. [x] Edit admin-dashboard.html add link to form
+5. [ ] Test create org
+6. [x] Complete
