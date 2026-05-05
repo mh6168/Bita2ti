@@ -45,10 +45,19 @@ public class AdminController {
 
         model.addAttribute("users", users);
         model.addAttribute("subscriptions", userSubscriptions);
-        model.addAttribute("orgRepo", orgRepo);
-
+        List<Organization> organizations = orgRepo.findAll();
+        model.addAttribute("organizations", organizations);
+        
+        Map<Long, String> orgNames = new HashMap<>();
+        for (Organization o : organizations) {
+            orgNames.put(o.getId(), o.getName());
+        }
+        model.addAttribute("orgNames", orgNames);
+        
         return "admin-dashboard";
+
     }
+
 
     @GetMapping("/admin/add-organization")
     public String addOrganizationForm(Model model) {

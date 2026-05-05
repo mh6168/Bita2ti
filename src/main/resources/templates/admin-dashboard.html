@@ -2,48 +2,73 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Admin Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1, h2 { color: #2c3e50; }
+        .btn { display: inline-block; background: #3498db; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 10px 0; }
+        .btn-validation { background: #e74c3c; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .approved { color: green; font-weight: bold; }
+        .pending { color: orange; font-weight: bold; }
+        ul { list-style-type: none; padding: 0; }
+        li { background: #f8f9fa; margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .user-section { margin-bottom: 30px; border: 1px solid #eee; border-radius: 8px; padding: 20px; }
+    </style>
 </head>
 <body>
 
 <h1>🛡 Admin Dashboard</h1>
 
-<a href="/admin/add-organization" style="display: inline-block; background: #3498db; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin-bottom: 20px;">➕ Add New Organization</a>
+<a href="/admin/add-organization" class="btn">➕ Add New Organization</a>
 
 <hr>
 
 <h2>👥 All Users</h2>
 
-<div th:each="user : ${users}">
+<div th:each="user : ${users}" class="user-section">
 
-    <h3>
-        <span th:text="${user.fullName}"></span>
-        (
-        <span th:text="${user.email}"></span>
-        )
-    </h3>
+    <h3 th:text="${user.fullName} + ' (' + ${user.email} + ')'"></h3>
 
-    <p>
-        Digital ID:
-        <b th:text="${user.digitalId}"></b>
-    </p>
+    <p><strong>Digital ID:</strong> <span th:text="${user.digitalId}"></span></p>
 
     <h4>📄 Subscriptions:</h4>
 
     <ul>
         <li th:each="sub : ${subscriptions[user.id]}">
-
-            <!-- show organization name -->
-            <span th:text="${orgRepo.findById(sub.organizationId).get().name}"></span>
-
-            -
-            <span style="color:green;">ACTIVE</span>
-
+            <strong th:text="${orgNames[sub.organizationId] ?: 'Unknown (ID ' + sub.organizationId}"></strong> - <span class="approved">ACTIVE</span>
         </li>
-    </ul>
 
-    <hr>
+    </ul>
 
 </div>
 
+<h2>🔍 Validation Forms</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr th:each="org : ${organizations}">
+      <td th:text="${org.name}"></td>
+      <td th:text="${org.type}"></td>
+      <td>
+        <span th:class="${org.approved} ? 'approved' : 'pending'" th:text="${org.approved} ? '✅ Approved' : '⚠️ Pending'"></span>
+      </td>
+      <td>
+        <a th:href="@{/validate/form(subscriptionId=${org.id})}" class="btn btn-validation">🔎 Open Validation</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 </body>
 </html>
+
