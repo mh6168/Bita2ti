@@ -22,27 +22,39 @@
 <h1>🛡 Admin Dashboard</h1>
 
 <a href="/admin/add-organization" class="btn">➕ Add New Organization</a>
+<a href="/admin/organization-admin-requests" class="btn" style="background:#6c5ce7; margin-left:10px;">🧾 View Admin Requests</a>
 
 <hr>
 
 <h2>👥 All Users</h2>
 
-<div th:each="user : ${users}" class="user-section">
 
-    <h3 th:text="${user.fullName} + ' (' + ${user.email} + ')'"></h3>
+<table>
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Digital ID</th>
+            <th>Organizations</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.fullName}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.digitalId}"></td>
+            <td>
+                <span th:if="${#lists.isEmpty(subscriptions[user.id])}">—</span>
+                <ul>
+                    <li th:each="sub : ${subscriptions[user.id]}">
+                        <strong th:text="${orgNames[sub.organizationId] ?: 'Unknown (ID ' + sub.organizationId + ')'}"></strong>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
-    <p><strong>Digital ID:</strong> <span th:text="${user.digitalId}"></span></p>
-
-    <h4>📄 Subscriptions:</h4>
-
-    <ul>
-        <li th:each="sub : ${subscriptions[user.id]}">
-            <strong th:text="${orgNames[sub.organizationId] ?: 'Unknown (ID ' + sub.organizationId}"></strong> - <span class="approved">ACTIVE</span>
-        </li>
-
-    </ul>
-
-</div>
 
 <h2>🔍 Validation Forms</h2>
 
