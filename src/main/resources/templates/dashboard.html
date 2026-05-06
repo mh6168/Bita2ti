@@ -1,51 +1,200 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Bita2ti Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bita2ti Dashboard</title>
+  <style>
+    :root{
+      --bg1:#0f172a;
+      --bg2:#111827;
+      --text:#e5e7eb;
+      --muted:#a3a3a3;
+      --brand:#7c3aed;
+      --brand2:#22c55e;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --card: rgba(255,255,255,.06);
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1000px 600px at 10% 10%, rgba(124,58,237,.35), transparent 55%),
+        radial-gradient(800px 500px at 90% 20%, rgba(34,197,94,.25), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
+
+    .wrap{ max-width:1100px; margin:0 auto; padding:28px 18px 70px; }
+
+    .topbar{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:20px; }
+    .titlebox h1{ margin:0; font-size:26px; letter-spacing:-.5px; }
+    .titlebox p{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.5; }
+
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding:10px 14px; border-radius:12px; text-decoration:none;
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      font-weight:700;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.18); }
+
+    .btn.primary{
+      border-color: rgba(124,58,237,.45);
+      background: linear-gradient(135deg, rgba(124,58,237,.22), rgba(124,58,237,.08));
+      box-shadow: 0 0 0 5px rgba(124,58,237,.12);
+    }
+
+    .grid{ display:grid; grid-template-columns:420px 1fr; gap:16px; align-items:start; }
+    @media (max-width: 900px){ .grid{ grid-template-columns:1fr; } }
+
+    .card{
+      background: linear-gradient(180deg, var(--card), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      box-shadow: var(--shadow);
+      padding:18px;
+      overflow:hidden;
+    }
+
+    .section h2{ margin:0 0 12px; font-size:18px; letter-spacing:-.2px; }
+
+    /* ID shaped box (approx.) */
+    .idwrap{
+      border-radius:18px;
+      background: linear-gradient(135deg, rgba(124,58,237,.20), rgba(34,197,94,.08));
+      border:1px solid rgba(255,255,255,.12);
+      padding:18px;
+      overflow:hidden;
+      position:relative;
+    }
+    .idwrap:before{
+      content:"";
+      position:absolute;
+      inset:-40px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(124,58,237,.35), transparent 40%),
+        radial-gradient(circle at 70% 60%, rgba(34,197,94,.25), transparent 45%);
+      pointer-events:none;
+    }
+    .idcontent{ position:relative; z-index:1; display:flex; flex-direction:column; gap:12px; }
+
+    .idtop{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+    .idname{ font-weight:900; font-size:22px; letter-spacing:-.4px; }
+    .iddetail{ color:rgba(255,255,255,.88); font-weight:800; }
+    .muted{ color:var(--muted); }
+
+    .idrow{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:14px; background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.10); }
+
+    /* QR box */
+    .qrbox{
+      width:120px; height:120px;
+      border-radius:16px;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.12);
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+      flex:0 0 auto;
+    }
+    .qrbox img{ width:100%; height:100%; object-fit:contain; }
+
+    select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      outline:none;
+    }
+    option{ background: #111827; color: var(--text); }
+
+    table{ width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:14px; }
+    th, td{ padding:12px 12px; text-align:left; border-bottom:1px solid rgba(255,255,255,.08); }
+    th{ color: rgba(255,255,255,.75); font-size:13px; font-weight:800; background: rgba(255,255,255,.03); }
+    tr:last-child td{ border-bottom:0; }
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="titlebox">
+        <h1>👋 Welcome, <span th:text="${name}"></span></h1>
+        <p>Your personal digital ID & subscriptions.</p>
+      </div>
+      <a href="/logout" class="btn">Logout</a>
+    </div>
 
-<h1>Welcome, <span th:text="${name}"></span> 👋</h1>
+    <div class="grid">
+      <!-- ID shaped box -->
+      <div class="idwrap">
+        <div class="idcontent">
+          <div class="idtop">
+            <div>
+              <div class="idname" th:text="${name}">User</div>
+              <div class="muted" style="font-weight:800; font-size:12px; margin-top:2px;">Digital ID (scan in validation)</div>
+            </div>
+            <div class="qrbox">
+              <img th:src="${'https://quickchart.io/qr?size=120&margin=0&eclevel=M&text=' + digitalId}" alt="QR" />
+            </div>
+          </div>
 
-<h3>Your Digital ID:</h3>
-<p style="font-weight:bold;" th:text="${digitalId}"></p>
+          <div class="idrow">
+            <div class="muted">Name</div>
+            <div class="iddetail" th:text="${name}"></div>
+          </div>
 
-<hr>
+          <div class="idrow">
+            <div class="muted">Digital ID</div>
+            <div class="iddetail" th:text="${digitalId}"></div>
+          </div>
+        </div>
+      </div>
 
-<!-- ========================= -->
-<!-- AVAILABLE ORGANIZATIONS -->
-<!-- ========================= -->
-<h2>📡 Available Services</h2>
+      <div class="card section">
+        <h2>📡 Available Services</h2>
 
-<form method="post" action="/subscribe">
-    <select name="orgId">
-        <option th:each="org : ${orgs}"
-                th:value="${org.id}"
-                th:text="${org.name + ' (' + org.type + ')'}">
-        </option>
-    </select>
+        <form method="post" action="/subscribe">
+          <select name="orgId" required>
+            <option th:each="org : ${orgs}"
+                    th:value="${org.id}"
+                    th:text="${org.name + ' (' + org.type + ')'}">
+            </option>
+          </select>
 
-    <button type="submit">Subscribe</button>
-</form>
+          <div style="margin-top:12px;">
+            <button type="submit" class="btn primary">✅ Subscribe</button>
+          </div>
+        </form>
 
-<hr>
+        <div style="height:14px;"></div>
 
-<!-- ========================= -->
-<!-- USER SUBSCRIPTIONS -->
-<!-- ========================= -->
-<h2>📄 My Services</h2>
+        <h2>📄 My Services</h2>
 
-<ul>
-    <li th:each="sub : ${subscriptions}">
-        <span th:text="${sub.organizationId}"></span>
-        -
-        <span style="color:green;">ACTIVE</span>
-    </li>
-</ul>
+        <table th:if="${subscriptions != null and !subscriptions.isEmpty()}">
+          <thead>
+            <tr>
+              <th>Organization ID</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="sub : ${subscriptions}">
+              <td th:text="${sub.organizationId}"></td>
+              <td style="color:#34d399; font-weight:900;">ACTIVE</td>
+            </tr>
+          </tbody>
+        </table>
 
-<hr>
-
-<a href="/logout">Logout</a>
-
+        <div th:if="${subscriptions == null or subscriptions.isEmpty()}" class="muted">No subscriptions yet.</div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
+
