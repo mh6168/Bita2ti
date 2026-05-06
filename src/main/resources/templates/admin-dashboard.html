@@ -1,88 +1,184 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Admin Dashboard</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1, h2 { color: #2c3e50; }
-        .btn { display: inline-block; background: #3498db; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 10px 0; }
-        .btn-validation { background: #e74c3c; }
-        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .approved { color: green; font-weight: bold; }
-        .pending { color: orange; font-weight: bold; }
-        ul { list-style-type: none; padding: 0; }
-        li { background: #f8f9fa; margin: 10px 0; padding: 10px; border-radius: 5px; }
-        .user-section { margin-bottom: 30px; border: 1px solid #eee; border-radius: 8px; padding: 20px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Dashboard - Bita2ti</title>
+  <style>
+    :root{
+      --bg1:#0f172a;
+      --bg2:#111827;
+      --text:#e5e7eb;
+      --muted:#a3a3a3;
+      --brand:#7c3aed;
+      --brand2:#22c55e;
+      --ring: rgba(124,58,237,.35);
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.09);
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1000px 600px at 10% 10%, rgba(124,58,237,.35), transparent 55%),
+        radial-gradient(800px 500px at 90% 20%, rgba(34,197,94,.25), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
+    .wrap{ max-width:1200px; margin:0 auto; padding:28px 18px 70px; }
+
+    .topbar{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
+      margin-bottom:20px;
+    }
+    .titlebox h1{ margin:0; font-size:26px; letter-spacing:-.5px; }
+    .titlebox p{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.5; }
+
+    .actions{ display:flex; gap:12px; flex-wrap:wrap; justify-content:flex-end; }
+
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding:10px 14px; border-radius:12px; text-decoration:none;
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      font-weight:700;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.18); }
+    .btn.primary{
+      border-color: rgba(124,58,237,.45);
+      background: linear-gradient(135deg, rgba(124,58,237,.22), rgba(124,58,237,.08));
+      box-shadow: 0 0 0 5px rgba(124,58,237,.12);
+    }
+    .btn.warn{ border-color: rgba(231,76,60,.35); background: rgba(231,76,60,.12); }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:16px;
+      align-items:start;
+    }
+
+
+    .card{
+      background: linear-gradient(180deg, var(--card), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      box-shadow: var(--shadow);
+      padding:18px;
+      overflow:hidden;
+    }
+
+    .section h2{ margin:0 0 12px; font-size:18px; letter-spacing:-.2px; }
+
+    table{ width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:14px; }
+    th, td{ padding:12px 12px; text-align:left; border-bottom:1px solid rgba(255,255,255,.08); }
+    th{ color: rgba(255,255,255,.75); font-size:13px; font-weight:800; background: rgba(255,255,255,.03); }
+    tr:last-child td{ border-bottom:0; }
+
+    ul{ list-style:none; padding-left:0; margin:0; display:flex; flex-direction:column; gap:8px; }
+    li{ background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); padding:8px 10px; border-radius:12px; }
+
+    .badge{ display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; font-weight:800; font-size:12px; border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04); }
+    .badge.approved{ color:#34d399; border-color: rgba(52,211,153,.35); background: rgba(52,211,153,.12); }
+    .badge.pending{ color:#fbbf24; border-color: rgba(251,191,36,.35); background: rgba(251,191,36,.10); }
+
+    .muted{ color:var(--muted); }
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="titlebox">
+        <h1>🛡 Admin Dashboard</h1>
+        <p>Manage users, organizations and validation workflow.</p>
+      </div>
+      <div class="actions">
+        <a href="/admin/add-organization" class="btn primary">➕ Add New Organization</a>
+        <a href="/admin/organization-admin-requests" class="btn">🧾 View Admin Requests</a>
+      </div>
+    </div>
 
-<h1>🛡 Admin Dashboard</h1>
-
-<a href="/admin/add-organization" class="btn">➕ Add New Organization</a>
-<a href="/admin/organization-admin-requests" class="btn" style="background:#6c5ce7; margin-left:10px;">🧾 View Admin Requests</a>
-
-<hr>
-
-<h2>👥 All Users</h2>
-
-
-<table>
-    <thead>
-        <tr>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Digital ID</th>
-            <th>Organizations</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr th:each="user : ${users}">
-            <td th:text="${user.fullName}"></td>
-            <td th:text="${user.email}"></td>
-            <td th:text="${user.digitalId}"></td>
-            <td>
+    <div class="grid">
+      <div class="card section">
+        <h2>👥 All Users</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Digital ID</th>
+              <th>Organizations</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="user : ${users}">
+              <td th:text="${user.fullName}"></td>
+              <td th:text="${user.email}"></td>
+              <td th:text="${user.digitalId}"></td>
+              <td>
                 <span th:if="${#lists.isEmpty(subscriptions[user.id])}">—</span>
                 <ul>
-                    <li th:each="sub : ${subscriptions[user.id]}">
-                        <strong th:text="${orgNames[sub.organizationId] ?: 'Unknown (ID ' + sub.organizationId + ')'}"></strong>
-                    </li>
+                  <li th:each="sub : ${subscriptions[user.id]}">
+                    <strong th:text="${orgNames[sub.organizationId] ?: 'Unknown (ID ' + sub.organizationId + ')'}"></strong>
+                  </li>
                 </ul>
-            </td>
-        </tr>
-    </tbody>
-</table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
+      <div class="card section">
+        <h2>🔍 Validation Forms</h2>
 
-<h2>🔍 Validation Forms</h2>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+          <span class="badge approved">Tip: Pick an organization to open its validation form</span>
+          <span class="badge pending" th:if="${#lists.isEmpty(organizations)}">No organizations found</span>
+        </div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Access Code</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr th:each="org : ${organizations}">
-      <td th:text="${org.name}"></td>
-      <td th:text="${org.type}"></td>
-<td>—</td>
-      <td>
-        <span th:class="${org.approved} ? 'approved' : 'pending'" th:text="${org.approved} ? '✅ Approved' : '⚠️ Pending'" ></span>
-      </td>
-      <td>
-        <a th:href="@{/validate/form(subscriptionId=${org.id})}" class="btn btn-validation">🔎 Open Validation</a>
-      </td>
-    </tr>
-  </tbody>
-</table>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:38%;">Organization</th>
+              <th style="width:18%;">Type</th>
+              <th style="width:22%;">Status</th>
+              <th style="width:22%;">Validation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="org : ${organizations}">
+              <td>
+                <div style="font-weight:900; letter-spacing:-.2px;" th:text="${org.name}">Org name</div>
+                <div class="muted" style="font-size:12px; margin-top:3px;" th:text="'Subscription ID: ' + ${org.id}"></div>
+              </td>
+
+              <td th:text="${org.type}"></td>
+
+              <td>
+                <span class="badge"
+                      th:classappend="${org.approved} ? ' approved' : ' pending'"
+                      th:text="${org.approved} ? '✅ Approved' : '⚠️ Pending'">
+                </span>
+              </td>
+
+              <td>
+                <a th:href="@{/validate/form(subscriptionId=${org.id})}" class="btn primary"
+                   style="margin:0; padding:10px 12px; border-radius:12px;">
+                  🔎 Open form
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
 </body>
 </html>
-
 
