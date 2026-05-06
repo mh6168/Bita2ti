@@ -60,13 +60,9 @@
     <tr th:each="org : ${organizations}">
       <td th:text="${org.name}"></td>
       <td th:text="${org.type}"></td>
-<td th:text="${accessCodes[org.id] ?: 'No code'}"></td>
-</xai:function_call >
-
-<xai:function_call name="execute_command">
-<parameter name="command">.\mvnw.cmd spring-boot:run
+<td>—</td>
       <td>
-        <span th:class="${org.approved} ? 'approved' : 'pending'" th:text="${org.approved} ? '✅ Approved' : '⚠️ Pending'"></span>
+        <span th:class="${org.approved} ? 'approved' : 'pending'" th:text="${org.approved} ? '✅ Approved' : '⚠️ Pending'" ></span>
       </td>
       <td>
         <a th:href="@{/validate/form(subscriptionId=${org.id})}" class="btn btn-validation">🔎 Open Validation</a>
