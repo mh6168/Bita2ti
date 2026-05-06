@@ -179,13 +179,13 @@
         <table th:if="${subscriptions != null and !subscriptions.isEmpty()}">
           <thead>
             <tr>
-              <th>Organization ID</th>
+              <th>Organization Name</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
             <tr th:each="sub : ${subscriptions}">
-              <td th:text="${sub.organizationId}"></td>
+              <td th:text="${orgNames[sub.organizationId]} ?: ('Unknown (ID ' + sub.organizationId + ')')"></td>
               <td style="color:#34d399; font-weight:900;">ACTIVE</td>
             </tr>
           </tbody>

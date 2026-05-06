@@ -37,6 +37,9 @@ public class DashboardController {
         model.addAttribute("subscriptions",
                 subscriptionService.getUserSubscriptions(user.getId()));
 
+        // Map orgId -> orgName for dashboard display
+        model.addAttribute("orgNames", subscriptionService.getOrgNamesById());
+
         return "dashboard";
     }
 }

@@ -48,4 +48,15 @@ public class SubscriptionService {
     public List<UserOrganization> getUserSubscriptions(Long userId) {
         return userOrgRepo.findByUserId(userId);
     }
+
+    // =========================
+    // MAP orgId -> orgName
+    // =========================
+    public java.util.Map<Long, String> getOrgNamesById() {
+        java.util.Map<Long, String> map = new java.util.HashMap<>();
+        for (Organization org : organizationRepo.findAll()) {
+            map.put(org.getId(), org.getName());
+        }
+        return map;
+    }
 }
