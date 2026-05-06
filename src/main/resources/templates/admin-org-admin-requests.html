@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - Organization Admin Requests</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #f2f2f2; }
+        .btn { display: inline-block; padding: 8px 12px; border-radius: 6px; text-decoration: none; }
+        .btn-approve { background: #27ae60; color: #fff; border: none; cursor: pointer; }
+        .btn-reject { background: #e74c3c; color: #fff; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<h1>Organization Admin Approval (Main Admin)</h1>
+
+<form th:action="@{/admin/organization-admin-requests}" method="get">
+    <label>Organization:</label>
+    <select name="organizationId" required>
+        <option value="" disabled th:selected="${selectedOrganizationId == null}">Select organization</option>
+        <option th:each="org : ${organizations}"
+                th:value="${org.id}"
+                th:text="${org.name} + ' (' + ${org.type} + ')'"></option>
+    </select>
+    <button type="submit">Load</button>
+</form>
+
+<div th:if="${pending == null or pending.isEmpty()}" style="margin-top: 16px;">
+    No pending requests.
+</div>
+
+<table th:if="${pending != null and !pending.isEmpty()}">
+    <thead>
+    <tr>
+        <th>User</th>
+        <th>User ID</th>
+        <th>Request ID</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="req : ${pending}">
+        <td th:text="${userLabelById[req.userId] ?: ('User #' + req.userId)}"></td>
+        <td th:text="${req.userId}"></td>
+        <td th:text="${req.id}"></td>
+        <td>
+            <form method="post" th:action="@{/admin/organization-admin-requests/approve}" style="display:inline-block;">
+                <input type="hidden" name="requestId" th:value="${req.id}" />
+                <input type="hidden" name="organizationId" th:value="${selectedOrganizationId}" />
+                <button class="btn btn-approve" type="submit">Approve</button>
+            </form>
+            <form method="post" th:action="@{/admin/organization-admin-requests/reject}" style="display:inline-block; margin-left:8px;">
+                <input type="hidden" name="requestId" th:value="${req.id}" />
+                <input type="hidden" name="organizationId" th:value="${selectedOrganizationId}" />
+                <button class="btn btn-reject" type="submit">Reject</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
+

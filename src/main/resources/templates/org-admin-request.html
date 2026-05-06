@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Request Organization Admin</title>
+</head>
+<body>
+
+<h2>Request Organization Admin Access</h2>
+
+<p th:if="${message}" th:text="${message}" style="color:green;"></p>
+
+<form method="post" action="/org-admin/request">
+
+    <label>Organization:</label>
+    <select name="organizationId" required>
+        <option value="" disabled selected>Select organization</option>
+        <option th:each="org : ${organizations}" th:value="${org.id}" th:text="${org.name + ' (' + org.type + ')'}"></option>
+    </select>
+
+    <br><br>
+    <button type="submit">Send request to admin</button>
+</form>
+
+<br>
+<a href="/dashboard">Back to Dashboard</a>
+
+</body>
+</html>
+

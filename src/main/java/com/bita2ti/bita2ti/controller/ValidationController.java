@@ -17,6 +17,23 @@ import java.util.Optional;
 @RequestMapping("/validate")
 public class ValidationController {
 
+    private boolean canAccessOrganization(Long userId, Long orgId) {
+        // 1) regular subscription access
+        if (userOrgRepo.findByUserIdAndOrganizationId(userId, orgId).isPresent()) {
+            return true;
+        }
+
+        // 2) organization admin access (approved)
+        if (organizationAdminService.isApproved(userId, orgId)) {
+
+            return true;
+        }
+
+        return false;
+    }
+
+
+
     @Autowired
     private UserRepository userRepository;
 
@@ -25,6 +42,13 @@ public class ValidationController {
 
     @Autowired
     private OrganizationRepository orgRepo;
+
+    @Autowired
+    private com.bita2ti.bita2ti.repository.OrganizationAdminRepository organizationAdminRepository;
+
+    @Autowired
+    private com.bita2ti.bita2ti.service.OrganizationAdminService organizationAdminService;
+
 
     // Existing REST API
     @GetMapping
@@ -39,25 +63,57 @@ public class ValidationController {
     }
 
     // New HTML lookup page
-@GetMapping("/form")
-    public String validationForm(@RequestParam(required = false) Long subscriptionId, Model model) {
+    @GetMapping("/form")
+    public String validationForm(
+            @RequestParam(required = false) Long subscriptionId,
+            Model model,
+            jakarta.servlet.http.HttpSession session
+    ) {
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
+            return "redirect:/login";
+        }
+
         if (subscriptionId == null) {
             model.addAttribute("serviceName", null);
-        } else {
-            Optional<Organization> orgOpt = orgRepo.findById(subscriptionId);
-            model.addAttribute("serviceName", orgOpt.map(Organization::getName).orElse("Unknown"));
-            model.addAttribute("subscriptionId", subscriptionId);
+            return "validation-form";
         }
+
+        boolean canAccess = canAccessOrganization(sessionUser.getId(), subscriptionId);
+        if (!canAccess) {
+            model.addAttribute("serviceName", "Access denied");
+            model.addAttribute("subscriptionId", subscriptionId);
+            return "validation-form";
+        }
+
+        Optional<Organization> orgOpt = orgRepo.findById(subscriptionId);
+        model.addAttribute("serviceName", orgOpt.map(Organization::getName).orElse("Unknown"));
+        model.addAttribute("subscriptionId", subscriptionId);
         return "validation-form";
     }
 
     @GetMapping("/lookup")
-    public String lookupPage(@RequestParam String digitalId,
-                             @RequestParam Long subscriptionId,
-                             Model model) {
+    public String lookupPage(
+            @RequestParam String digitalId,
+            @RequestParam Long subscriptionId,
+            Model model,
+            jakarta.servlet.http.HttpSession session
+    ) {
+
+        User sessionUser = (User) session.getAttribute("user");
+        if (sessionUser == null) {
+            return "redirect:/login";
+        }
+
+        if (!canAccessOrganization(sessionUser.getId(), subscriptionId)) {
+            model.addAttribute("serviceName", "Access denied");
+            model.addAttribute("subscribed", false);
+            return "validation-result";
+        }
 
         Optional<User> userOpt = userRepository.findByDigitalId(digitalId);
         Optional<Organization> orgOpt = orgRepo.findById(subscriptionId);
+
 
         if (userOpt.isEmpty()) {
             model.addAttribute("message", "User not found");

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Organization Admin Signup</title>
+</head>
+<body>
+
+<h2>Organization Admin Signup</h2>
+
+<p th:if="${message}" th:text="${message}" style="color:green;"></p>
+
+<form method="post" action="/admin/signup">
+
+    <label>Email:</label><br>
+    <input type="email" name="email" required />
+    <br><br>
+
+    <label>Password:</label><br>
+    <input type="password" name="password" required />
+    <br><br>
+
+    <label>Full name (optional):</label><br>
+    <input type="text" name="fullName" />
+    <br><br>
+
+    <label>Organization to admin:</label><br>
+    <select name="organizationId" required>
+        <option value="" disabled selected>Select organization</option>
+        <option th:each="org : ${organizations}" th:value="${org.id}" th:text="${org.name}"></option>
+    </select>
+
+    <br><br>
+
+    <button type="submit">Request Admin Access</button>
+</form>
+
+<br>
+<a href="/admin/login">Already requested? Login</a>
+</body>
+</html>
+

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Organization Admin Requests</title>
+</head>
+<body>
+
+<h2>Organization Admin Approval Queue</h2>
+<p>Organization ID: <b th:text="${organizationId}"></b></p>
+
+<table border="1" cellpadding="8">
+    <thead>
+    <tr>
+        <th>User ID</th>
+        <th>Approved?</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="req : ${pendingRequests}">
+        <td th:text="${req.userId}"></td>
+        <td>No (pending)</td>
+        <td>
+            <form method="post" th:action="@{/org-admin/requests/approve}" style="display:inline-block;">
+                <input type="hidden" name="requestId" th:value="${req.id}"/>
+                <input type="hidden" name="organizationId" th:value="${organizationId}"/>
+                <button type="submit">Approve</button>
+            </form>
+            <form method="post" th:action="@{/org-admin/requests/reject}" style="display:inline-block; margin-left:8px;">
+                <input type="hidden" name="requestId" th:value="${req.id}"/>
+                <input type="hidden" name="organizationId" th:value="${organizationId}"/>
+                <button type="submit">Reject</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<a href="/dashboard">Back to Dashboard</a>
+</body>
+</html>
+
