@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Random;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class UserService {
@@ -14,8 +15,12 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
+
+@Autowired
     private EmailService emailService; // ✅ NEW
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // 🔥 Generate Digital ID
     private String generateDigitalId() {
@@ -31,6 +36,9 @@ public class UserService {
     }
 
     public User register(User user) {
+
+        // ✅ Hash password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         // ✅ Generate unique ID
         String digitalId;
@@ -56,7 +64,7 @@ public class UserService {
     public Optional<User> login(String email, String password) {
         Optional<User> user = userRepository.findByEmail(email);
 
-        if (user.isPresent() && user.get().getPassword().equals(password)) {
+        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
             return user;
         }
 
