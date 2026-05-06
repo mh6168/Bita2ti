@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bita2ti</title>
+  <style>
+    :root{
+      --bg1:#0f172a;
+      --bg2:#111827;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.09);
+      --text:#e5e7eb;
+      --muted:#a3a3a3;
+      --brand:#7c3aed;
+      --brand2:#22c55e;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --ring: rgba(124,58,237,.35);
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      color:var(--text);
+      background: radial-gradient(1000px 600px at 10% 10%, rgba(124,58,237,.35), transparent 55%),
+                  radial-gradient(800px 500px at 90% 20%, rgba(34,197,94,.25), transparent 55%),
+                  linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:28px 18px 70px;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:36px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+      color:inherit;
+    }
+
+    .logo{
+      width:42px; height:42px;
+      border-radius:14px;
+      background: linear-gradient(135deg, rgba(124,58,237,1), rgba(34,197,94,1));
+      box-shadow: 0 10px 30px rgba(124,58,237,.25);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:800;
+      letter-spacing:-.5px;
+    }
+
+    .brand h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+
+    .brand p{
+      margin:2px 0 0;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .nav{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:12px;
+      text-decoration:none;
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+
+    .btn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.18);
+    }
+
+    .btn.primary{
+      border-color: rgba(124,58,237,.45);
+      background: linear-gradient(135deg, rgba(124,58,237,.22), rgba(124,58,237,.08));
+      box-shadow: 0 0 0 5px rgba(124,58,237,.12);
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:18px;
+      align-items:stretch;
+    }
+
+    @media (max-width: 900px){
+      .hero{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      background: linear-gradient(180deg, var(--card), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      box-shadow: var(--shadow);
+      padding:24px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .card:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(600px 250px at 20% 0%, rgba(124,58,237,.25), transparent 60%),
+                  radial-gradient(500px 230px at 90% 20%, rgba(34,197,94,.18), transparent 60%);
+      pointer-events:none;
+    }
+
+    .card > *{ position:relative; z-index:1; }
+
+    .hero h2{
+      margin:0 0 10px;
+      font-size:40px;
+      line-height:1.05;
+      letter-spacing:-1px;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.6;
+      max-width:62ch;
+    }
+
+    .hero-actions{
+      margin-top:18px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .feature-grid{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:12px;
+    }
+
+    @media (max-width: 520px){
+      .feature-grid{ grid-template-columns:1fr; }
+    }
+
+    .feature{
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .feature b{ display:block; margin-bottom:6px; }
+    .feature span{ color:var(--muted); font-size:13px; line-height:1.5; }
+
+    .side{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .metric{
+      padding:18px;
+      border-radius:18px;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.10);
+    }
+
+    .metric .kpi{
+      font-size:26px;
+      font-weight:800;
+      letter-spacing:-.6px;
+      margin-bottom:6px;
+    }
+
+    .metric .lbl{ color:var(--muted); font-size:13px; line-height:1.5; }
+
+    footer{
+      margin-top:30px;
+      color:rgba(255,255,255,.55);
+      font-size:12px;
+      text-align:center;
+    }
+
+    .glow-line{
+      height:1px;
+      width:100%;
+      background: linear-gradient(90deg, transparent, rgba(124,58,237,.55), rgba(34,197,94,.45), transparent);
+      margin:16px 0;
+      opacity:.9;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" th:href="@{/}">
+      <div class="logo">BT</div>
+      <div>
+        <h1>Bita2ti</h1>
+        <p>Unified digital identity for organizations</p>
+      </div>
+    </a>
+
+    <div class="nav">
+      <a class="btn" th:href="@{/login}">🔐 Login</a>
+      <a class="btn primary" th:href="@{/signup}">✨ Sign up</a>
+      <a class="btn" th:href="@{/admin/dashboard}">🛡 Admin</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="card">
+      <h2>One identity.<br/>Many organizations.</h2>
+      <p>
+        Bita2ti helps users create a unified digital identity and lets organizations validate access through a simple approval workflow.
+        Designed to be fast, clear, and easy to operate.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn primary" th:href="@{/signup}">🚀 Get started</a>
+        <a class="btn" th:href="@{/login}">👤 I already have an account</a>
+      </div>
+
+      <div class="glow-line"></div>
+
+      <div class="feature-grid">
+        <div class="feature">
+          <b>✅ Digital ID generation</b>
+          <span>Every user gets a unique identity for validation workflows.</span>
+        </div>
+        <div class="feature">
+          <b>🧑‍🤝‍🧑 Organization admin requests</b>
+          <span>Organizations can approve privileges safely and transparently.</span>
+        </div>
+        <div class="feature">
+          <b>🧾 Validation forms</b>
+          <span>Lookup subscriptions using digital IDs and organization selection.</span>
+        </div>
+        <div class="feature">
+          <b>🛡 Admin dashboard</b>
+          <span>Manage users and view organization admin requests in one place.</span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="metric">
+        <div class="kpi">⚡ Secure</div>
+        <div class="lbl">Password hashing + session-based login flow.</div>
+      </div>
+      <div class="metric">
+        <div class="kpi">📌 Clear workflow</div>
+        <div class="lbl">Requests → approval/rejection → org-admin validation.</div>
+      </div>
+      <div class="metric">
+        <div class="kpi">🌍 Simple UI</div>
+        <div class="lbl">Tables, actions, and validation links in a clean layout.</div>
+      </div>
+    </aside>
+  </section>
+
+  <footer>
+    © <span th:text="${#dates.format(#dates.createNow(),'yyyy')}">2026</span> Bita2ti. All rights reserved.
+  </footer>
+</div>
+</body>
+</html>
+
