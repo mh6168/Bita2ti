@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import com.bita2ti.bita2ti.model.OrganizationAccessCode;
+import com.bita2ti.bita2ti.repository.OrganizationAccessCodeRepository;
 
 @Controller
 public class AdminController {
@@ -29,7 +32,11 @@ public class AdminController {
     @Autowired
     private OrganizationRepository orgRepo;
 
-    @GetMapping("/admin/dashboard")
+    @Autowired
+    private OrganizationAccessCodeRepository accessCodeRepo;
+
+
+@GetMapping("/admin/dashboard")
     public String adminDashboard(Model model) {
 
         List<User> users = userRepo.findAll();
@@ -49,14 +56,19 @@ public class AdminController {
         model.addAttribute("organizations", organizations);
         
         Map<Long, String> orgNames = new HashMap<>();
+        Map<Long, String> accessCodes = new HashMap<>();
         for (Organization o : organizations) {
             orgNames.put(o.getId(), o.getName());
+            accessCodeRepo.findByOrganizationId(o.getId()).ifPresent(ac -> accessCodes.put(o.getId(), ac.getCode()));
         }
         model.addAttribute("orgNames", orgNames);
+        model.addAttribute("accessCodes", accessCodes);
+
         
         return "admin-dashboard";
 
     }
+
 
 
     @GetMapping("/admin/add-organization")
@@ -68,7 +80,27 @@ public class AdminController {
     @PostMapping("/admin/add-organization")
     public String addOrganization(@ModelAttribute Organization organization) {
         organization.setApproved(true);
-        orgRepo.save(organization);
+        Organization savedOrg = orgRepo.save(organization);
+        
+        // Generate unique access code
+        String code;
+        do {
+            StringBuilder sb = new StringBuilder("ORG-");
+            String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            Random random = new Random();
+            for (int i = 0; i < 10; i++) {
+                sb.append(chars.charAt(random.nextInt(chars.length())));
+            }
+            code = sb.toString();
+        } while (accessCodeRepo.findByCode(code).isPresent());
+
+        OrganizationAccessCode accessCode = new OrganizationAccessCode();
+        accessCode.setCode(code);
+        accessCode.setOrganization(savedOrg);
+        accessCodeRepo.save(accessCode);
+        
         return "redirect:/admin/dashboard";
     }
+
+
 }
