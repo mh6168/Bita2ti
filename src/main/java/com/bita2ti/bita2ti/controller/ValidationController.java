@@ -17,20 +17,27 @@ import java.util.Optional;
 @RequestMapping("/validate")
 public class ValidationController {
 
-    private boolean canAccessOrganization(Long userId, Long orgId) {
-        // 1) regular subscription access
-        if (userOrgRepo.findByUserIdAndOrganizationId(userId, orgId).isPresent()) {
+    private boolean canAccessOrganization(User sessionUser, Long orgId) {
+        // Global admin can access all forms.
+        // AuthController sets session user digitalId = "ADMIN-0000".
+        if (sessionUser != null && "ADMIN-0000".equals(sessionUser.getDigitalId())) {
             return true;
         }
 
-        // 2) organization admin access (approved)
-        if (organizationAdminService.isApproved(userId, orgId)) {
+        // Regular subscription access
+        if (sessionUser != null && userOrgRepo.findByUserIdAndOrganizationId(sessionUser.getId(), orgId).isPresent()) {
+            return true;
+        }
 
+        // Organization admin access (approved)
+        if (sessionUser != null && organizationAdminService.isApproved(sessionUser.getId(), orgId)) {
             return true;
         }
 
         return false;
     }
+
+
 
 
 
@@ -79,12 +86,21 @@ public class ValidationController {
             return "validation-form";
         }
 
-        boolean canAccess = canAccessOrganization(sessionUser.getId(), subscriptionId);
+        boolean canAccess = canAccessOrganization(sessionUser, subscriptionId);
+
+        // canAccessOrganization already contains admin/user access logic
         if (!canAccess) {
+
+            // Keep the UI, but ensure the user does not validate that subscription.
+            // (validation UI will show Access denied based on serviceName)
             model.addAttribute("serviceName", "Access denied");
             model.addAttribute("subscriptionId", subscriptionId);
             return "validation-form";
         }
+
+
+
+
 
         Optional<Organization> orgOpt = orgRepo.findById(subscriptionId);
         model.addAttribute("serviceName", orgOpt.map(Organization::getName).orElse("Unknown"));
@@ -105,7 +121,8 @@ public class ValidationController {
             return "redirect:/login";
         }
 
-        if (!canAccessOrganization(sessionUser.getId(), subscriptionId)) {
+        if (!canAccessOrganization(sessionUser, subscriptionId)) {
+
             model.addAttribute("serviceName", "Access denied");
             model.addAttribute("subscribed", false);
             return "validation-result";
