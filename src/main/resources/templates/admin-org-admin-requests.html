@@ -160,15 +160,11 @@
                 <input type="hidden" name="organizationId" th:value="${selectedOrganizationId}" />
                 <button type="submit" class="btn approve">✅ Approve</button>
               </form>
-              <form method="post" th:action="@{/admin/organization-admin-requests/reject}" style="display:inline-block;">
-                <input type="hidden" name="requestId" th:value="${req.id}" />
-                <input type="hidden" name="organizationId" th:value="${selectedOrganizationId}" />
-                <button type="submit" class="btn reject">🚫 Reject</button>
-              </form>
 
 
 
             </td>
+
           </tr>
         </tbody>
       </table>

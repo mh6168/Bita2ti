@@ -1,7 +1,13 @@
 # TODO
-- [x] Remove per-organization access-code generation (AdminController)
-- [x] Fix broken Thymeleaf template admin-dashboard.html
-- [x] Add Organization Admin flow (organization_admins table)
-- [x] Add Org-admin signup/login and approval queue (org-admin-requests)
-- [ ] Add Main admin UI/endpoints to approve org-admin requests globally
+
+## Fix org-admin Reject button + crash
+- [x] Remove access-code generation from `AdminController` org creation.
+- [x] Fix compilation error in `ValidationController` (canAccessOrganization signature mismatch).
+- [x] Confirm `mvn compile` succeeds.
+
+## Admin dashboard: latest transactions button
+- [ ] Add a button/link on `/admin/dashboard` to latest transactions.
+- [ ] Implement endpoint + service/controller query for newest-to-oldest transactions.
+- [ ] Display transaction list with associated user (fullName/email) in a template.
+- [ ] Compile and verify routes work.
 
