@@ -29,8 +29,13 @@ public class OrganizationAdminService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TransactionService transactionService;
+
+
     public void requestAdmin(Long userId, Long organizationId) {
         Optional<OrganizationAdmin> existing = organizationAdminRepository.findByUserIdAndOrganizationId(userId, organizationId);
+
         if (existing.isPresent()) {
             return;
         }
@@ -40,7 +45,11 @@ public class OrganizationAdminService {
         admin.setOrganizationId(organizationId);
         admin.setApproved(false);
         organizationAdminRepository.save(admin);
+
+        // 🧾 Record transaction
+        transactionService.record(userId, "ORG_ADMIN_REQUESTED");
     }
+
 
     public List<OrganizationAdmin> getPendingRequests(Long organizationId) {
         return organizationAdminRepository.findByOrganizationIdAndApproved(organizationId, false);
@@ -57,7 +66,11 @@ public class OrganizationAdminService {
 
         request.setApproved(approved);
         organizationAdminRepository.save(request);
+
+        // 🧾 Record transaction (approved/rejected)
+        transactionService.record(request.getUserId(), approved ? "ORG_ADMIN_APPROVED" : "ORG_ADMIN_REJECTED");
     }
+
 
     public boolean isApproved(Long userId, Long organizationId) {
         return organizationAdminRepository

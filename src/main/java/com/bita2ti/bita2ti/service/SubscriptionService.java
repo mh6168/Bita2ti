@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import com.bita2ti.bita2ti.service.TransactionService;
+
+
+
 @Service
 public class SubscriptionService {
 
@@ -17,6 +21,10 @@ public class SubscriptionService {
 
     @Autowired
     private OrganizationRepository organizationRepo;
+
+    @Autowired
+    private TransactionService transactionService;
+
 
     // =========================
     // SUBSCRIBE
@@ -27,13 +35,18 @@ public class SubscriptionService {
             return;
         }
 
+
         UserOrganization uo = new UserOrganization();
         uo.setUserId(userId);
         uo.setOrganizationId(orgId);
         uo.setStatus(UserOrganization.Status.APPROVED);
 
         userOrgRepo.save(uo);
+
+        // 🧾 Record transaction
+        transactionService.record(userId, "USER_SUBSCRIBED");
     }
+
 
     // =========================
     // GET ALL ORGANIZATIONS

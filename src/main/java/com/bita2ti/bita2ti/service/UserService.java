@@ -16,8 +16,12 @@ public class UserService {
     private UserRepository userRepository;
 
 
-@Autowired
+    @Autowired
     private EmailService emailService; // ✅ NEW
+
+    @Autowired
+    private TransactionService transactionService;
+
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -40,6 +44,7 @@ public class UserService {
         // ✅ Hash password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+
         // ✅ Generate unique ID
         String digitalId;
         do {
@@ -57,6 +62,9 @@ public class UserService {
                 savedUser.getFullName() ,
                 savedUser.getDigitalId()
         );
+
+        // 🧾 Record transaction
+        transactionService.record(savedUser.getId(), "ACCOUNT_CREATED");
 
         return savedUser;
     }
