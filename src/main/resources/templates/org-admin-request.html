@@ -1,29 +1,120 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Request Organization Admin</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Operator request</title>
+  <style>
+    :root{
+      --bg1:#0f172a;
+      --bg2:#111827;
+      --text:#e5e7eb;
+      --muted:#a3a3a3;
+      --brand:#7c3aed;
+      --brand2:#22c55e;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --card: rgba(255,255,255,.06);
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1000px 600px at 10% 10%, rgba(124,58,237,.35), transparent 55%),
+        radial-gradient(800px 500px at 90% 20%, rgba(34,197,94,.25), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+    }
+    .wrap{ max-width:900px; margin:0 auto; padding:28px 18px 70px; }
+
+    .topbar{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
+      margin-bottom:18px;
+    }
+    .titlebox h1{ margin:0; font-size:26px; letter-spacing:-.5px; }
+    .titlebox p{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.5; }
+
+    .card{
+      background: linear-gradient(180deg, var(--card), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      box-shadow: var(--shadow);
+      padding:18px;
+      overflow:hidden;
+    }
+
+    .section h2{ margin:0 0 12px; font-size:18px; letter-spacing:-.2px; }
+
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding:10px 14px; border-radius:12px; text-decoration:none;
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      font-weight:700;
+    }
+    .btn:hover{ transform: translateY(-1px); background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.18); }
+
+    .btn.primary{
+      border-color: rgba(124,58,237,.45);
+      background: linear-gradient(135deg, rgba(124,58,237,.22), rgba(124,58,237,.08));
+      box-shadow: 0 0 0 5px rgba(124,58,237,.12);
+    }
+
+    select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      outline:none;
+    }
+    option{ background: #111827; color: var(--text); }
+
+    label{ display:block; margin-bottom:10px; color: rgba(255,255,255,.86); font-weight:800; }
+
+    .row{ margin-top:14px; }
+    .actions{ display:flex; align-items:center; gap:12px; margin-top:16px; flex-wrap:wrap; }
+
+    .muted{ color:var(--muted); }
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="titlebox">
+        <h1>🧾 Operator request</h1>
+        <p>Choose the organization you want to request operator access for.</p>
+      </div>
+      <a href="/dashboard" class="btn">← Back</a>
+    </div>
 
-<h2>Request Organization Admin Access</h2>
+    <div class="card section">
+      <h2 style="margin-top:0;">Operator request</h2>
 
-<p th:if="${message}" th:text="${message}" style="color:green;"></p>
+      <p th:if="${message}" th:text="${message}" style="color:var(--brand2); font-weight:900;"></p>
 
-<form method="post" action="/org-admin/request">
+      <form method="post" action="/org-admin/request" style="margin-top:16px;">
+        <label>Organization</label>
+        <select name="organizationId" required>
+          <option value="" disabled selected>Select organization</option>
+          <option th:each="org : ${organizations}" th:value="${org.id}" th:text="${org.name + ' (' + org.type + ')'}"></option>
+        </select>
 
-    <label>Organization:</label>
-    <select name="organizationId" required>
-        <option value="" disabled selected>Select organization</option>
-        <option th:each="org : ${organizations}" th:value="${org.id}" th:text="${org.name + ' (' + org.type + ')'}"></option>
-    </select>
+        <div class="actions">
+          <button type="submit" class="btn primary">➕ Send request</button>
+        </div>
 
-    <br><br>
-    <button type="submit">Send request to admin</button>
-</form>
-
-<br>
-<a href="/dashboard">Back to Dashboard</a>
-
+        <div class="row muted" style="font-size:13px;">
+          You will be able to manage your request status in the pending page after submission.
+        </div>
+      </form>
+    </div>
+  </div>
 </body>
 </html>
+
 
