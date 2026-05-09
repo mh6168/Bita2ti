@@ -111,7 +111,7 @@ public Optional<Organization> findOrganization(Long organizationId) {
             String name = u.getFullName();
 
             // Link to org-admin validation form
-            String validationLink = "/validate/form?subscriptionId=" + orgId;
+            String validationLink = "https://localhost:8082/validate/form?subscriptionId=" + orgId;
 
             orgAdminApprovalEmailService.sendOrgAdminApprovedEmail(toEmail, name, validationLink);
         });
