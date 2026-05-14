@@ -22,6 +22,24 @@ Bita2ti aims to modernize traditional identity systems by replacing fragmented i
 * Password authentication
 * Role-based access control
 * Protected system operations
+* Automated email notification when account is created
+
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/signup.png"
+       width="800">
+</p>
+
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/digital_id_created_email.png"
+       width="750">
+</p>
+
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/login.png"
+       width="750">
+</p>
+
+
 
 ## 🪪 Digital Identity Management
 
@@ -29,12 +47,52 @@ Bita2ti aims to modernize traditional identity systems by replacing fragmented i
 * Centralized user records
 * Organization-based identity management
 
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/user_dashboard.png"
+       width="1000">
+</p>
+
 ## 🏢 Organization System
 
 * Create and manage organizations
 * Organization administrator approval system
 * User-to-organization relationships
 * Membership status tracking
+* Operator (Organization admin) request form
+* Validation forms for operators with access control options
+
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/admin_dashboard.png"
+       width="975">
+</p>
+
+
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/add_org.png"
+       width="975">
+</p>
+
+Users can request to become operators (organization admins) of one or more organizations using this form :
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/operator_request.png"
+       width="975">
+</p>
+
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/operator_request_pending.png"
+       width="975">
+</p>
+
+Main admin can view the operator requests submitted by users:
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/org_admin_request.png"
+       width="975">
+</p>
+
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/operator_approval_email.png"
+       width="975">
+</p>
 
 ## 📋 Subscription & Verification
 
@@ -42,11 +100,40 @@ Bita2ti aims to modernize traditional identity systems by replacing fragmented i
 * Approval workflows
 * Registration verification system
 
+This can only be accessed by the main admin and the approved operators of the following organization only ! :
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/subscription_validation_form.png"
+       width="750">
+</p>
+
+Access denied message for unauthorized users :
+
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/subscription_validation_form_denied.png"
+       width="750">
+</p>
+
+Checking if user is subscribed to a certain organization using his digital id:
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/user_is_subscribed.png"
+       width="650">
+</p>
+
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/user_not_subscribed.png"
+       width="550">
+</p>
+
 ## 📊 Activity Tracking
 
 * Transaction and activity logging
 * Timestamped operations
 * User activity monitoring
+
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/latest_transactions.png"
+       width="1050">
+</p>
 
 ---
 
@@ -55,30 +142,20 @@ Bita2ti aims to modernize traditional identity systems by replacing fragmented i
 | Role                   | Responsibilities                                     |
 | ---------------------- | ---------------------------------------------------- |
 | **User**               | Register, login, manage identity, join organizations |
-| **Organization Admin** | Manage organization users and approvals              |
+| **Organization Admin / Operator** | Manage organization users and validate user subscriptions              |
 | **System Admin**       | Full platform management and monitoring              |
 
 ---
 
 # 🗄️ Database Design
 
-The system database is designed to support:
+Here is an image of the Database Schema (MySQL Workbench) :
 
-* User management
-* Organizations
-* Membership relationships
-* Organization administrators
-* Transactions & activity logs
-* Subscription management
+<p align="center">
+  <img src="https://github.com/mh6168/Bita2ti/blob/main/screenshots/DB_Schema-v001.png"
+       width="1050">
+</p>
 
-### Main Tables
-
-* `users`
-* `organizations`
-* `user_organization`
-* `organization_admins`
-* `transactions`
-* `subscription`
 
 ---
 
@@ -127,7 +204,7 @@ mvn spring-boot:run
 Application will run on:
 
 ```txt
-http://localhost:8080
+http://localhost:8082
 ```
 
 ---
